@@ -40,10 +40,12 @@ body {
     justify-content: center;
     align-items: center;
     z-index: 9999;
+    transition: opacity 0.5s ease;
 }
 
 .loading-content {
     text-align: center;
+    padding: 2rem;
 }
 
 .cyber-spinner {
@@ -54,6 +56,7 @@ body {
     border-right-color: var(--secondary-color);
     border-radius: 50%;
     animation: spin 1s linear infinite;
+    margin: 0 auto 2rem;
 }
 
 .loading-text {
@@ -78,8 +81,16 @@ body {
 
 .progress-fill {
     height: 100%;
+    width: 0;
     background: var(--primary-color);
-    animation: progressFill 2s ease-in-out infinite;
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    display: block;
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: var(--text-color);
 }
 
 /* Header Styles */
@@ -148,10 +159,6 @@ body {
     background: rgba(0, 230, 230, 0.1);
     color: var(--primary-color);
     transform: translateY(-2px);
-}
-
-.icon {
-    font-size: 1.2rem;
 }
 
 /* Wallet Section */
@@ -255,6 +262,7 @@ body {
 .featured-section {
     margin: 2rem auto;
     max-width: 1400px;
+    padding: 0 1rem;
 }
 
 .section-header {
@@ -295,6 +303,54 @@ body {
     -webkit-overflow-scrolling: touch;
 }
 
+/* Filters Section */
+.filters-section {
+    max-width: 1400px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.search-container {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.search-input {
+    width: 100%;
+    padding: 1rem;
+    padding-right: 3rem;
+    background: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-color);
+}
+
+.search-btn {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+.filters-container {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.filter-select {
+    padding: 0.75rem;
+    background: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-color);
+    cursor: pointer;
+}
+
 /* NFT Grid */
 .nft-grid {
     display: grid;
@@ -319,6 +375,24 @@ body {
     box-shadow: 0 0 20px var(--primary-glow);
 }
 
+/* Mobile Menu */
+.mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    cursor: pointer;
+}
+
+.menu-icon span {
+    display: block;
+    width: 25px;
+    height: 2px;
+    background: var(--primary-color);
+    margin: 5px 0;
+    transition: all 0.3s ease;
+}
+
 /* Animations */
 @keyframes spin {
     to { transform: rotate(360deg); }
@@ -330,17 +404,11 @@ body {
     100% { opacity: 0.6; }
 }
 
-@keyframes progressFill {
-    0% { width: 0; }
-    50% { width: 100%; }
-    100% { width: 0; }
-}
-
 @keyframes rotate {
     to { transform: rotate(360deg); }
 }
 
-/* Mobile Responsive Design */
+/* Mobile Responsive */
 @media (max-width: 768px) {
     .main-nav {
         display: none;
@@ -354,91 +422,56 @@ body {
         grid-template-columns: 1fr;
     }
 
+    .filters-container {
+        flex-direction: column;
+    }
+
+    .filter-select {
+        width: 100%;
+    }
+
     .nft-grid {
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
         padding: 1rem;
     }
+
+    .featured-section {
+        padding: 0 0.5rem;
+    }
+
+    .loading-progress {
+        width: 90%;
+    }
 }
 
-/* Mobile Menu Button */
-.mobile-menu-btn {
-    display: none;
-    background: none;
-    border: none;
-    color: var(--primary-color);
-    cursor: pointer;
-    padding: 0.5rem;
-}
-
-.menu-icon {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.menu-icon span {
-    display: block;
-    width: 24px;
-    height: 2px;
-    background: var(--primary-color);
-    transition: all 0.3s ease;
-}
-
-/* Mobile Navigation */
-.mobile-nav {
+/* Status Messages */
+.status-message {
     position: fixed;
-    top: 0;
-    right: -100%;
-    width: 80%;
-    height: 100vh;
-    background: var(--background-color);
-    border-left: 1px solid var(--primary-color);
-    transition: right 0.3s ease;
-    z-index: 1000;
-}
-
-.mobile-nav.active {
-    right: 0;
-}
-
-.mobile-nav-content {
-    padding: 2rem;
-}
-
-.mobile-nav-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-}
-
-.close-nav-btn {
-    background: none;
-    border: none;
-    color: var(--text-color);
-    font-size: 1.5rem;
-    cursor: pointer;
-}
-
-.mobile-nav-links {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.mobile-nav-link {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+    bottom: 20px;
+    right: 20px;
     padding: 1rem;
-    color: var(--text-color);
-    text-decoration: none;
     border-radius: 8px;
-    transition: all 0.3s ease;
+    z-index: 1000;
+    animation: slideIn 0.3s ease;
 }
 
-.mobile-nav-link:hover,
-.mobile-nav-link.active {
-    background: rgba(0, 230, 230, 0.1);
-    color: var(--primary-color);
+.status-success {
+    background: var(--success-color);
+    color: var(--background-color);
+}
+
+.status-error {
+    background: var(--error-color);
+    color: var(--text-color);
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
