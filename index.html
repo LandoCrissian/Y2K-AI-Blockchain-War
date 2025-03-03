@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Y2K Marketplace - NeoBots & Digital Collectibles</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p id="loadingMessage">Loading...</p>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="header-left">
+                <h1>Y2K Marketplace</h1>
+            </div>
+            <nav class="nav-menu">
+                <div class="wallet-info" style="display: none;">
+                    <span id="walletBalance">POGs: 0</span>
+                    <span id="y2kBalance">Y2K: 0</span>
+                </div>
+                <button class="btn btn-primary" id="connectWallet">Connect Wallet</button>
+                <button class="btn btn-secondary" id="disconnectWallet" style="display: none;">Disconnect</button>
+            </nav>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-16 6h16"/>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- User Dashboard (visible when connected) -->
+        <section id="userDashboard" class="dashboard-section" style="display: none;">
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <h3>My Collection</h3>
+                    <p id="nftCount">0 NFTs</p>
+                    <button class="btn btn-secondary view-collection-btn">View All</button>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Active Listings</h3>
+                    <p id="listingCount">0 Items Listed</p>
+                    <button class="btn btn-secondary manage-listings-btn">Manage</button>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Recent Activity</h3>
+                    <p id="activityCount">0 Recent Transactions</p>
+                    <button class="btn btn-secondary view-activity-btn">View History</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Marketplace Filters -->
+        <section class="filter-section">
+            <div class="filter-options">
+                <div class="search-container">
+                    <input type="search" id="searchInput" placeholder="Search NeoBots..." class="search-input">
+                    <button class="search-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="filter-group">
+                    <select class="filter-select" id="categoryFilter">
+                        <option value="all">All Categories</option>
+                        <option value="neobots">NeoBots</option>
+                        <option value="mystery">Mystery Boxes</option>
+                        <option value="game">Game Assets</option>
+                        <option value="special">Special Items</option>
+                    </select>
+                    <select class="filter-select" id="priceFilter">
+                        <option value="newest">Newest</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="rarity">Rarity</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <!-- Category Tabs -->
+        <div class="category-tabs">
+            <div class="category-tab active" data-category="all">All</div>
+            <div class="category-tab" data-category="neobots">NeoBots</div>
+            <div class="category-tab" data-category="mystery">Mystery Boxes</div>
+            <div class="category-tab" data-category="game">Game Assets</div>
+            <div class="category-tab" data-category="special">Special Items</div>
+        </div>
+
+        <!-- NFT Grid -->
+        <div class="marketplace-grid" id="nftGrid">
+            <!-- NFT cards will be dynamically inserted here -->
+        </div>
+
+        <!-- Activity Feed -->
+        <section class="activity-feed">
+            <div class="activity-header">
+                <h2>Recent Activity</h2>
+                <button class="btn btn-secondary" id="refreshActivity">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"></path>
+                    </svg>
+                    Refresh
+                </button>
+            </div>
+            <div class="activity-list" id="activityList">
+                <!-- Activity items will be dynamically inserted here -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Modals -->
+    <!-- NFT Detail Modal -->
+    <div id="nftModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="nft-detail-content">
+                <!-- NFT details will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- List NFT Modal -->
+    <div id="listModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>List Your NFT</h2>
+            <form id="listNFTForm">
+                <div class="form-group">
+                    <label for="listingPrice">Price (POGs)</label>
+                    <input type="number" id="listingPrice" required min="0" step="1">
+                </div>
+                <div class="form-group">
+                    <label for="listingDuration">Duration</label>
+                    <select id="listingDuration" required>
+                        <option value="1">1 Day</option>
+                        <option value="3">3 Days</option>
+                        <option value="7">7 Days</option>
+                        <option value="30">30 Days</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">List NFT</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
