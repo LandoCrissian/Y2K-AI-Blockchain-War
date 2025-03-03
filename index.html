@@ -5,118 +5,183 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Y2K Marketplace - NeoBots & Digital Collectibles</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
-        <div class="loading-spinner"></div>
-        <p id="loadingMessage">Loading...</p>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-content">
+            <div class="cyber-spinner"></div>
+            <h2 class="loading-text">Initializing Y2K Marketplace</h2>
+            <div class="loading-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                <span class="progress-text">Loading...</span>
+            </div>
+        </div>
     </div>
 
     <!-- Header -->
-    <header>
+    <header class="cyber-header">
         <div class="header-content">
             <div class="header-left">
-                <h1>Y2K Marketplace</h1>
-            </div>
-            <nav class="nav-menu">
-                <div class="wallet-info" style="display: none;">
-                    <span id="walletBalance">POGs: 0</span>
-                    <span id="y2kBalance">Y2K: 0</span>
+                <div class="logo-container">
+                    <img src="../assets/logo.png" alt="Y2K Logo" class="logo">
+                    <h1 class="glow-text">Y2K Marketplace</h1>
                 </div>
-                <button class="btn btn-primary" id="connectWallet">Connect Wallet</button>
-                <button class="btn btn-secondary" id="disconnectWallet" style="display: none;">Disconnect</button>
+            </div>
+
+            <nav class="main-nav">
+                <div class="nav-sections">
+                    <a href="#explore" class="nav-link active">
+                        <i class="icon">🔍</i>
+                        <span>Explore</span>
+                    </a>
+                    <a href="#neobots" class="nav-link">
+                        <i class="icon">🤖</i>
+                        <span>NeoBots</span>
+                    </a>
+                    <a href="#mystery-boxes" class="nav-link">
+                        <i class="icon">📦</i>
+                        <span>Mystery Boxes</span>
+                    </a>
+                    <a href="#game-assets" class="nav-link">
+                        <i class="icon">🎮</i>
+                        <span>Game Assets</span>
+                    </a>
+                </div>
+
+                <div class="wallet-section">
+                    <div class="wallet-info" style="display: none;">
+                        <div class="balance-container">
+                            <div class="balance-item">
+                                <img src="../assets/pogs-icon.png" alt="POGs" class="currency-icon">
+                                <span id="pogsBalance">0 POGs</span>
+                            </div>
+                            <div class="balance-item">
+                                <img src="../assets/y2k-icon.png" alt="Y2K" class="currency-icon">
+                                <span id="y2kBalance">0 Y2K</span>
+                            </div>
+                        </div>
+                        <button id="disconnectWallet" class="btn btn-secondary">
+                            <span class="btn-text">Disconnect</span>
+                        </button>
+                    </div>
+                    <button id="connectWallet" class="btn btn-primary">
+                        <span class="btn-text">Connect Wallet</span>
+                        <div class="btn-glow"></div>
+                    </button>
+                </div>
             </nav>
+
             <button class="mobile-menu-btn" id="mobileMenuBtn">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-16 6h16"/>
-                </svg>
+                <div class="menu-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
             </button>
         </div>
     </header>
 
+    <!-- Mobile Navigation Drawer -->
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-content">
+            <div class="mobile-nav-header">
+                <h2>Menu</h2>
+                <button class="close-nav-btn">&times;</button>
+            </div>
+            <div class="mobile-nav-links">
+                <a href="#explore" class="mobile-nav-link active">
+                    <i class="icon">🔍</i>
+                    <span>Explore</span>
+                </a>
+                <a href="#neobots" class="mobile-nav-link">
+                    <i class="icon">🤖</i>
+                    <span>NeoBots</span>
+                </a>
+                <a href="#mystery-boxes" class="mobile-nav-link">
+                    <i class="icon">📦</i>
+                    <span>Mystery Boxes</span>
+                </a>
+                <a href="#game-assets" class="mobile-nav-link">
+                    <i class="icon">🎮</i>
+                    <span>Game Assets</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
     <!-- Main Content -->
     <main>
-        <!-- User Dashboard (visible when connected) -->
-        <section id="userDashboard" class="dashboard-section" style="display: none;">
-            <div class="dashboard-grid">
-                <div class="dashboard-card">
-                    <h3>My Collection</h3>
-                    <p id="nftCount">0 NFTs</p>
-                    <button class="btn btn-secondary view-collection-btn">View All</button>
-                </div>
-                <div class="dashboard-card">
-                    <h3>Active Listings</h3>
-                    <p id="listingCount">0 Items Listed</p>
-                    <button class="btn btn-secondary manage-listings-btn">Manage</button>
-                </div>
-                <div class="dashboard-card">
-                    <h3>Recent Activity</h3>
-                    <p id="activityCount">0 Recent Transactions</p>
-                    <button class="btn btn-secondary view-activity-btn">View History</button>
-                </div>
+        <!-- Market Stats Banner -->
+        <section class="market-stats-banner">
+            <div class="stat-item">
+                <span class="stat-value" id="totalVolume">1.2M</span>
+                <span class="stat-label">Total Volume (POGs)</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" id="activeListings">2.5K</span>
+                <span class="stat-label">Active Listings</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" id="floorPrice">500</span>
+                <span class="stat-label">Floor Price (POGs)</span>
             </div>
         </section>
 
-        <!-- Marketplace Filters -->
-        <section class="filter-section">
-            <div class="filter-options">
-                <div class="search-container">
-                    <input type="search" id="searchInput" placeholder="Search NeoBots..." class="search-input">
-                    <button class="search-btn">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                        </svg>
-                    </button>
+        <!-- Featured Section -->
+        <section class="featured-section">
+            <div class="section-header">
+                <h2>Featured NeoBots</h2>
+                <div class="featured-controls">
+                    <button class="control-btn prev">←</button>
+                    <button class="control-btn next">→</button>
                 </div>
-                <div class="filter-group">
-                    <select class="filter-select" id="categoryFilter">
-                        <option value="all">All Categories</option>
-                        <option value="neobots">NeoBots</option>
-                        <option value="mystery">Mystery Boxes</option>
-                        <option value="game">Game Assets</option>
-                        <option value="special">Special Items</option>
-                    </select>
-                    <select class="filter-select" id="priceFilter">
-                        <option value="newest">Newest</option>
-                        <option value="price-low">Price: Low to High</option>
-                        <option value="price-high">Price: High to Low</option>
-                        <option value="rarity">Rarity</option>
-                    </select>
-                </div>
+            </div>
+            <div class="featured-carousel" id="featuredCarousel">
+                <!-- 3D NeoBot previews will be inserted here -->
             </div>
         </section>
 
-        <!-- Category Tabs -->
-        <div class="category-tabs">
-            <div class="category-tab active" data-category="all">All</div>
-            <div class="category-tab" data-category="neobots">NeoBots</div>
-            <div class="category-tab" data-category="mystery">Mystery Boxes</div>
-            <div class="category-tab" data-category="game">Game Assets</div>
-            <div class="category-tab" data-category="special">Special Items</div>
-        </div>
-
-        <!-- NFT Grid -->
-        <div class="marketplace-grid" id="nftGrid">
-            <!-- NFT cards will be dynamically inserted here -->
-        </div>
-
-        <!-- Activity Feed -->
-        <section class="activity-feed">
-            <div class="activity-header">
-                <h2>Recent Activity</h2>
-                <button class="btn btn-secondary" id="refreshActivity">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"></path>
+        <!-- Filters and Search -->
+        <section class="filters-section">
+            <div class="search-container">
+                <input type="search" id="searchInput" placeholder="Search NeoBots, items, collections...">
+                <button class="search-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                     </svg>
-                    Refresh
                 </button>
             </div>
-            <div class="activity-list" id="activityList">
-                <!-- Activity items will be dynamically inserted here -->
+            <div class="filters-container">
+                <select class="filter-select" id="categoryFilter">
+                    <option value="all">All Categories</option>
+                    <option value="neobots">NeoBots</option>
+                    <option value="mystery">Mystery Boxes</option>
+                    <option value="game">Game Assets</option>
+                </select>
+                <select class="filter-select" id="rarityFilter">
+                    <option value="all">All Rarities</option>
+                    <option value="common">Common</option>
+                    <option value="rare">Rare</option>
+                    <option value="epic">Epic</option>
+                    <option value="legendary">Legendary</option>
+                </select>
+                <select class="filter-select" id="priceFilter">
+                    <option value="newest">Newest</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                </select>
             </div>
+        </section>
+
+        <!-- NFT Grid -->
+        <section class="nft-grid" id="nftGrid">
+            <!-- NFT cards will be dynamically inserted here -->
         </section>
     </main>
 
@@ -124,39 +189,29 @@
     <!-- NFT Detail Modal -->
     <div id="nftModal" class="modal">
         <div class="modal-content">
-            <span class="close-modal">&times;</span>
+            <button class="close-modal">&times;</button>
             <div class="nft-detail-content">
-                <!-- NFT details will be dynamically inserted here -->
+                <!-- Will be populated dynamically -->
             </div>
         </div>
     </div>
 
     <!-- List NFT Modal -->
-    <div id="listModal" class="modal">
+    <div id="listNFTModal" class="modal">
         <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2>List Your NFT</h2>
-            <form id="listNFTForm">
-                <div class="form-group">
-                    <label for="listingPrice">Price (POGs)</label>
-                    <input type="number" id="listingPrice" required min="0" step="1">
-                </div>
-                <div class="form-group">
-                    <label for="listingDuration">Duration</label>
-                    <select id="listingDuration" required>
-                        <option value="1">1 Day</option>
-                        <option value="3">3 Days</option>
-                        <option value="7">7 Days</option>
-                        <option value="30">30 Days</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary">List NFT</button>
-            </form>
+            <button class="close-modal">&times;</button>
+            <div class="listing-content">
+                <h2>List Your NFT</h2>
+                <form id="listNFTForm">
+                    <!-- Form content -->
+                </form>
+            </div>
         </div>
     </div>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
+    <script src="three-loader.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
