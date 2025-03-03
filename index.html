@@ -65,12 +65,10 @@
                                 <span id="y2kBalance">0 Y2K</span>
                             </div>
                         </div>
-                        <button id="disconnectWallet" class="btn btn-secondary">
-                            <span class="btn-text">Disconnect</span>
-                        </button>
+                        <button id="disconnectWallet" class="btn btn-secondary">Disconnect</button>
                     </div>
                     <button id="connectWallet" class="btn btn-primary">
-                        <span class="btn-text">Connect Wallet</span>
+                        Connect Wallet
                         <div class="btn-glow"></div>
                     </button>
                 </div>
@@ -86,7 +84,7 @@
         </div>
     </header>
 
-    <!-- Mobile Navigation Drawer -->
+    <!-- Mobile Navigation -->
     <div class="mobile-nav" id="mobileNav">
         <div class="mobile-nav-content">
             <div class="mobile-nav-header">
@@ -116,7 +114,7 @@
 
     <!-- Main Content -->
     <main>
-        <!-- Market Stats Banner -->
+        <!-- Market Stats -->
         <section class="market-stats-banner">
             <div class="stat-item">
                 <span class="stat-value" id="totalVolume">1.2M</span>
@@ -142,11 +140,11 @@
                 </div>
             </div>
             <div class="featured-carousel" id="featuredCarousel">
-                <!-- 3D NeoBot previews will be inserted here -->
+                <!-- Featured NFTs will be inserted here -->
             </div>
         </section>
 
-        <!-- Filters and Search -->
+        <!-- Filters Section -->
         <section class="filters-section">
             <div class="search-container">
                 <input type="search" id="searchInput" placeholder="Search NeoBots, items, collections...">
@@ -185,33 +183,8 @@
         </section>
     </main>
 
-    <!-- Modals -->
-    <!-- NFT Detail Modal -->
-    <div id="nftModal" class="modal">
-        <div class="modal-content">
-            <button class="close-modal">&times;</button>
-            <div class="nft-detail-content">
-                <!-- Will be populated dynamically -->
-            </div>
-        </div>
-    </div>
-
-    <!-- List NFT Modal -->
-    <div id="listNFTModal" class="modal">
-        <div class="modal-content">
-            <button class="close-modal">&times;</button>
-            <div class="listing-content">
-                <h2>List Your NFT</h2>
-                <form id="listNFTForm">
-                    <!-- Form content -->
-                </form>
-            </div>
-        </div>
-    </div>
-
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
-    <script src="three-loader.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
