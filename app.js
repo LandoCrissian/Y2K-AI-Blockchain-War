@@ -7,61 +7,79 @@ document.addEventListener('DOMContentLoaded', function() {
         activeCategory: 'all',
         featuredNFTs: [],
         allNFTs: [],
-        scene: null,
-        renderer: null,
-        camera: null,
-        activeNeobot: null
     };
 
-    // Initialize loading sequence
-    initializeLoadingSequence();
+    // Sample NFT Data
+    const sampleNFTs = [
+        {
+            id: 1,
+            name: "CyberNeoBot #001",
+            type: "neobot",
+            rarity: "legendary",
+            price: 1000,
+            image: "path/to/neobot1.jpg",
+            attributes: {
+                power: 95,
+                speed: 88,
+                intelligence: 92
+            }
+        },
+        {
+            id: 2,
+            name: "Mystery Box Alpha",
+            type: "mystery",
+            rarity: "epic",
+            price: 500,
+            image: "path/to/mysterybox.jpg",
+            attributes: {
+                potential: "Unknown",
+                level: "Alpha"
+            }
+        },
+        // Add more sample NFTs
+    ];
 
-    // THREE.js Setup for 3D NeoBots
-    function initThreeJS() {
-        state.scene = new THREE.Scene();
-        state.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        state.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        
-        // Setup lighting
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-        const pointLight = new THREE.PointLight(0x00e6e6, 1, 100);
-        pointLight.position.set(10, 10, 10);
-        state.scene.add(ambientLight, pointLight);
-
-        // Camera position
-        state.camera.position.z = 5;
-    }
-
-    // Loading Sequence
+    // Initialize Loading Sequence
     async function initializeLoadingSequence() {
         const loadingScreen = document.getElementById('loadingScreen');
         const progressFill = document.querySelector('.progress-fill');
         const progressText = document.querySelector('.progress-text');
 
-        const loadingSteps = [
-            { text: 'Initializing marketplace...', duration: 500 },
-            { text: 'Loading NeoBots...', duration: 800 },
-            { text: 'Connecting to network...', duration: 600 },
-            { text: 'Preparing interface...', duration: 600 }
-        ];
+        try {
+            // Loading steps
+            const steps = [
+                { text: 'Initializing marketplace...', duration: 500 },
+                { text: 'Loading NeoBots...', duration: 800 },
+                { text: 'Connecting to network...', duration: 600 },
+                { text: 'Preparing interface...', duration: 600 }
+            ];
 
-        let progress = 0;
-        
-        for (const step of loadingSteps) {
-            progressText.textContent = step.text;
-            await animateProgress(progress, progress + 25, step.duration, progressFill);
-            progress += 25;
+            for (let i = 0; i < steps.length; i++) {
+                const step = steps[i];
+                progressText.textContent = step.text;
+                await animateProgress(
+                    (i * 25),
+                    ((i + 1) * 25),
+                    step.duration,
+                    progressFill
+                );
+            }
+
+            // Initialize marketplace
+            await initializeMarketplace();
+
+            // Hide loading screen
+            loadingScreen.style.opacity = '0';
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+                state.isLoading = false;
+            }, 500);
+
+        } catch (error) {
+            console.error('Initialization error:', error);
+            progressText.textContent = 'Error loading marketplace. Please refresh.';
+            progressText.style.color = 'var(--error-color)';
         }
-
-        // Initialize marketplace components
-        await initializeMarketplace();
-        
-        // Hide loading screen with fade effect
-        loadingScreen.style.opacity = '0';
-        setTimeout(() => {
-            loadingScreen.style.display = 'none';
-            state.isLoading = false;
-        }, 500);
     }
 
     // Progress Animation
@@ -89,108 +107,44 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize Marketplace
     async function initializeMarketplace() {
-        initThreeJS();
-        await loadNFTData();
-        initializeCarousel();
-        setupEventListeners();
-        setupFilters();
+        try {
+            await loadNFTData();
+            initializeCarousel();
+            setupEventListeners();
+            setupFilters();
+            return Promise.resolve();
+        } catch (error) {
+            return Promise.reject(error);
+        }
     }
 
     // Load NFT Data
     async function loadNFTData() {
-        // This would normally fetch from the blockchain
-        // Using sample data for demo
-        state.allNFTs = [
-            {
-                id: 1,
-                name: "CyberNeoBot #001",
-                type: "neobot",
-                rarity: "legendary",
-                price: 1000,
-                image: "path/to/neobot1.jpg",
-                model: "path/to/3d/model1.glb",
-                attributes: {
-                    power: 95,
-                    speed: 88,
-                    intelligence: 92
-                }
-            },
-            // Add more NFTs here
-        ];
-
-        state.featuredNFTs = state.allNFTs.filter(nft => nft.rarity === "legendary");
+        // Simulate loading from blockchain
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        state.allNFTs = sampleNFTs;
+        state.featuredNFTs = sampleNFTs.filter(nft => nft.rarity === 'legendary');
+        renderNFTGrid(state.allNFTs);
     }
 
-    // Initialize Featured Carousel
+    // Initialize Carousel
     function initializeCarousel() {
         const carousel = document.getElementById('featuredCarousel');
-        
-        state.featuredNFTs.forEach(nft => {
-            const card = createFeatureCard(nft);
-            carousel.appendChild(card);
-        });
-
-        // Initialize 3D models for featured NFTs
-        state.featuredNFTs.forEach(nft => {
-            initializeNeobot3DModel(nft);
-        });
-    }
-
-    // Create Feature Card with 3D Preview
-    function createFeatureCard(nft) {
-        const card = document.createElement('div');
-        card.className = 'feature-card';
-        card.innerHTML = `
-            <div class="model-container" id="model-${nft.id}"></div>
-            <div class="card-info">
-                <h3>${nft.name}</h3>
-                <p class="rarity ${nft.rarity}">${nft.rarity}</p>
-                <div class="price-info">
-                    <span>${nft.price} POGs</span>
-                    <button class="btn btn-primary buy-btn" data-id="${nft.id}">
-                        Buy Now
-                    </button>
+        carousel.innerHTML = state.featuredNFTs.map(nft => `
+            <div class="featured-card">
+                <img src="${nft.image}" alt="${nft.name}" class="featured-image">
+                <div class="featured-info">
+                    <h3>${nft.name}</h3>
+                    <p class="rarity ${nft.rarity}">${nft.rarity}</p>
+                    <div class="price">
+                        <span>${nft.price} POGs</span>
+                        <button class="btn btn-primary buy-btn" data-id="${nft.id}">
+                            Buy Now
+                        </button>
+                    </div>
                 </div>
             </div>
-        `;
-        return card;
-    }
-
-    // Initialize 3D Model
-    function initializeNeobot3DModel(nft) {
-        const container = document.getElementById(`model-${nft.id}`);
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(container.clientWidth, container.clientHeight);
-        container.appendChild(renderer.domElement);
-
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(
-            75,
-            container.clientWidth / container.clientHeight,
-            0.1,
-            1000
-        );
-
-        // Add lighting
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-        const pointLight = new THREE.PointLight(0x00e6e6, 1, 100);
-        pointLight.position.set(10, 10, 10);
-        scene.add(ambientLight, pointLight);
-
-        // Load 3D model
-        const loader = new THREE.GLTFLoader();
-        loader.load(nft.model, (gltf) => {
-            const model = gltf.scene;
-            scene.add(model);
-
-            // Animation
-            function animate() {
-                requestAnimationFrame(animate);
-                model.rotation.y += 0.005;
-                renderer.render(scene, camera);
-            }
-            animate();
-        });
+        `).join('');
     }
 
     // Setup Event Listeners
@@ -225,11 +179,10 @@ document.addEventListener('DOMContentLoaded', function() {
             carousel.scrollBy({ left: 300, behavior: 'smooth' });
         });
 
-        // NFT Card Click Events
-        document.getElementById('nftGrid').addEventListener('click', (e) => {
-            const buyBtn = e.target.closest('.buy-btn');
-            if (buyBtn) {
-                handleNFTPurchase(buyBtn.dataset.id);
+        // Buy Buttons
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('buy-btn')) {
+                handlePurchase(e.target.dataset.id);
             }
         });
     }
@@ -242,38 +195,39 @@ document.addEventListener('DOMContentLoaded', function() {
         const priceFilter = document.getElementById('priceFilter');
 
         const filterNFTs = () => {
-            const searchTerm = searchInput.value.toLowerCase();
-            const category = categoryFilter.value;
-            const rarity = rarityFilter.value;
-            const sortBy = priceFilter.value;
+            let filtered = [...state.allNFTs];
 
-            let filtered = state.allNFTs;
-
-            // Apply filters
-            if (category !== 'all') {
-                filtered = filtered.filter(nft => nft.type === category);
-            }
-            if (rarity !== 'all') {
-                filtered = filtered.filter(nft => nft.rarity === rarity);
-            }
-            if (searchTerm) {
+            // Apply search filter
+            if (searchInput.value) {
+                const searchTerm = searchInput.value.toLowerCase();
                 filtered = filtered.filter(nft => 
                     nft.name.toLowerCase().includes(searchTerm) ||
                     nft.rarity.toLowerCase().includes(searchTerm)
                 );
             }
 
-            // Apply sorting
-            filtered.sort((a, b) => {
-                switch (sortBy) {
-                    case 'price-low':
-                        return a.price - b.price;
-                    case 'price-high':
-                        return b.price - a.price;
-                    default:
-                        return b.id - a.id;
-                }
-            });
+            // Apply category filter
+            if (categoryFilter.value !== 'all') {
+                filtered = filtered.filter(nft => nft.type === categoryFilter.value);
+            }
+
+            // Apply rarity filter
+            if (rarityFilter.value !== 'all') {
+                filtered = filtered.filter(nft => nft.rarity === rarityFilter.value);
+            }
+
+            // Apply price sorting
+            switch (priceFilter.value) {
+                case 'price-low':
+                    filtered.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-high':
+                    filtered.sort((a, b) => b.price - a.price);
+                    break;
+                case 'newest':
+                    filtered.sort((a, b) => b.id - a.id);
+                    break;
+            }
 
             renderNFTGrid(filtered);
         };
@@ -289,13 +243,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function renderNFTGrid(nfts) {
         const grid = document.getElementById('nftGrid');
         grid.innerHTML = nfts.map(nft => `
-            <div class="nft-card" data-id="${nft.id}">
-                <div class="nft-image">
-                    <img src="${nft.image}" alt="${nft.name}">
-                    <div class="nft-overlay">
-                        <button class="btn btn-primary view-btn">View Details</button>
-                    </div>
-                </div>
+            <div class="nft-card">
+                <img src="${nft.image}" alt="${nft.name}" class="nft-image">
                 <div class="nft-info">
                     <h3>${nft.name}</h3>
                     <p class="rarity ${nft.rarity}">${nft.rarity}</p>
@@ -318,8 +267,51 @@ document.addEventListener('DOMContentLoaded', function() {
         `).join('');
     }
 
-    // NFT Purchase Handler
-    async function handleNFTPurchase(nftId) {
+    // Wallet Connection
+    async function connectWallet() {
+        try {
+            showLoading('Connecting wallet...');
+            
+            if (typeof window.ethereum === 'undefined') {
+                throw new Error('Please install a Web3 wallet');
+            }
+
+            const accounts = await window.ethereum.request({ 
+                method: 'eth_requestAccounts' 
+            });
+            
+            state.userAccount = accounts[0];
+            state.isConnected = true;
+            updateWalletUI(true);
+            showSuccess('Wallet connected successfully!');
+
+        } catch (error) {
+            showError(error.message);
+        } finally {
+            hideLoading();
+        }
+    }
+
+    // Disconnect Wallet
+    function disconnectWallet() {
+        state.isConnected = false;
+        state.userAccount = null;
+        updateWalletUI(false);
+        showSuccess('Wallet disconnected');
+    }
+
+    // Update Wallet UI
+    function updateWalletUI(connected) {
+        document.getElementById('connectWallet').style.display = 
+            connected ? 'none' : 'block';
+        document.getElementById('disconnectWallet').style.display = 
+            connected ? 'block' : 'none';
+        document.querySelector('.wallet-info').style.display = 
+            connected ? 'flex' : 'none';
+    }
+
+    // Handle Purchase
+    async function handlePurchase(nftId) {
         if (!state.isConnected) {
             showError('Please connect your wallet first');
             return;
@@ -327,8 +319,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         try {
             showLoading('Processing purchase...');
-            // This would interact with the smart contract
-            await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate blockchain interaction
+            // Simulate blockchain transaction
+            await new Promise(resolve => setTimeout(resolve, 2000));
             showSuccess('Purchase successful!');
         } catch (error) {
             showError('Purchase failed: ' + error.message);
@@ -340,8 +332,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Utility Functions
     function showLoading(message) {
         const loadingScreen = document.getElementById('loadingScreen');
-        const loadingText = loadingScreen.querySelector('.loading-text');
-        loadingText.textContent = message;
+        document.querySelector('.loading-text').textContent = message;
         loadingScreen.style.display = 'flex';
     }
 
@@ -350,20 +341,25 @@ document.addEventListener('DOMContentLoaded', function() {
         loadingScreen.style.display = 'none';
     }
 
-    function showError(message) {
-        // Implementation of error toast
-    }
-
     function showSuccess(message) {
-        // Implementation of success toast
+        showMessage(message, 'success');
     }
 
-    // Window resize handler
-    window.addEventListener('resize', () => {
-        if (state.camera && state.renderer) {
-            state.camera.aspect = window.innerWidth / window.innerHeight;
-            state.camera.updateProjectionMatrix();
-            state.renderer.setSize(window.innerWidth, window.innerHeight);
-        }
-    });
+    function showError(message) {
+        showMessage(message, 'error');
+    }
+
+    function showMessage(message, type) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `status-message status-${type}`;
+        messageDiv.textContent = message;
+        document.body.appendChild(messageDiv);
+
+        setTimeout(() => {
+            messageDiv.remove();
+        }, 3000);
+    }
+
+    // Start Initialization
+    initializeLoadingSequence().catch(console.error);
 });
