@@ -21,22 +21,22 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-w-4xl mx-auto mb-8 md:mb-12">
-            <div class="faction-card cro p-4 md:p-6" ontouchstart="" onclick="selectFaction(1)">
+            <div class="faction-card cro p-4 md:p-6" onclick="selectFaction(1)">
                 <h3 class="text-xl md:text-2xl font-bold text-[#008cff] mb-2 md:mb-3">CRO</h3>
                 <p class="text-sm md:text-base text-gray-400">Masters of digital commerce and technological innovation</p>
             </div>
             
-            <div class="faction-card sol p-4 md:p-6" ontouchstart="" onclick="selectFaction(2)">
+            <div class="faction-card sol p-4 md:p-6" onclick="selectFaction(2)">
                 <h3 class="text-xl md:text-2xl font-bold text-[#9933ff] mb-2 md:mb-3">SOL</h3>
                 <p class="text-sm md:text-base text-gray-400">Swift and decisive, warriors of the digital realm</p>
             </div>
             
-            <div class="faction-card eth p-4 md:p-6" ontouchstart="" onclick="selectFaction(3)">
+            <div class="faction-card eth p-4 md:p-6" onclick="selectFaction(3)">
                 <h3 class="text-xl md:text-2xl font-bold text-gray-300 mb-2 md:mb-3">ETH</h3>
                 <p class="text-sm md:text-base text-gray-400">Ancient pioneers of the blockchain universe</p>
             </div>
             
-            <div class="faction-card bnb p-4 md:p-6" ontouchstart="" onclick="selectFaction(4)">
+            <div class="faction-card bnb p-4 md:p-6" onclick="selectFaction(4)">
                 <h3 class="text-xl md:text-2xl font-bold text-[#f3ba2f] mb-2 md:mb-3">BNB</h3>
                 <p class="text-sm md:text-base text-gray-400">Economic powerhouse with unmatched resources</p>
             </div>
@@ -52,6 +52,79 @@
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <script>
+        const contractAddress = "YOUR_DEPLOYED_CONTRACT_ADDRESS"; // Replace with your Cronos contract address
+        const contractABI = [
+            {
+                "inputs": [{"internalType": "uint8","name": "factionIndex","type": "uint8"}],
+                "name": "chooseFaction",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [{"internalType": "address","name": "user","type": "address"}],
+                "name": "getFaction",
+                "outputs": [{"internalType": "uint8","name": "","type": "uint8"}],
+                "stateMutability": "view",
+                "type": "function"
+            }
+        ];
+
+        let web3;
+        let userAccount;
+        let contract;
+
+        async function connectWallet() {
+            if (window.ethereum) {
+                web3 = new Web3(window.ethereum);
+                try {
+                    const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+                    userAccount = accounts[0];
+                    contract = new web3.eth.Contract(contractABI, contractAddress);
+                    document.getElementById("status").innerText = "Connected: " + userAccount;
+                    getFaction();
+                } catch (error) {
+                    console.error(error);
+                    document.getElementById("status").innerText = "Wallet Connection Failed";
+                }
+            } else {
+                alert("Please install MetaMask or use a Web3-enabled browser.");
+            }
+        }
+
+        async function selectFaction(factionIndex) {
+            if (!userAccount) {
+                alert("Please connect your wallet first.");
+                return;
+            }
+
+            try {
+                await contract.methods.chooseFaction(factionIndex).send({ from: userAccount });
+                alert("Faction selected successfully!");
+                getFaction();
+            } catch (error) {
+                console.error(error);
+                alert("Faction selection failed. You may have already chosen a faction.");
+            }
+        }
+
+        async function getFaction() {
+            if (!userAccount || !contract) return;
+
+            try {
+                const factionIndex = await contract.methods.getFaction(userAccount).call();
+                let factionName = "Not chosen";
+                if (factionIndex == 1) factionName = "CRO";
+                else if (factionIndex == 2) factionName = "SOL";
+                else if (factionIndex == 3) factionName = "ETH";
+                else if (factionIndex == 4) factionName = "BNB";
+
+                document.getElementById("faction").innerText = "Faction: " + factionName;
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    </script>
 </body>
 </html>
