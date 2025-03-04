@@ -2,88 +2,281 @@
     --primary-color: #00e6e6;
     --primary-glow: rgba(0, 230, 230, 0.3);
     --secondary-color: #ff007f;
+    --secondary-glow: rgba(255, 0, 127, 0.3);
     --background-color: #0a0a0a;
-    --card-bg: rgba(26, 26, 26, 0.8);
+    --card-background: rgba(26, 26, 26, 0.8);
     --border-color: #2d2d2d;
     --text-color: #e2e8f0;
+    --hover-color: #009999;
+    --neon-blue: #00f7ff;
+    --neon-pink: #ff2d85;
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Orbitron', sans-serif;
+/* Base Styles & Animations */
+@keyframes glitch {
+    0% {
+        transform: translate(0);
+    }
+    20% {
+        transform: translate(-2px, 2px);
+    }
+    40% {
+        transform: translate(-2px, -2px);
+    }
+    60% {
+        transform: translate(2px, 2px);
+    }
+    80% {
+        transform: translate(2px, -2px);
+    }
+    100% {
+        transform: translate(0);
+    }
 }
 
-body {
-    background-color: var(--background-color);
-    color: var(--text-color);
-    min-height: 100vh;
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
 }
 
-.marketplace-container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 20px;
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
 }
 
-/* Header Styles */
-.cyber-header {
-    background: rgba(10, 10, 10, 0.95);
-    border-bottom: 1px solid var(--primary-color);
-    padding: 1rem;
-    position: sticky;
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Cyber Grid Background */
+.cyber-grid {
+    position: fixed;
     top: 0;
-    z-index: 100;
-    backdrop-filter: blur(10px);
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        linear-gradient(transparent 0%, rgba(0, 230, 230, 0.1) 100%),
+        linear-gradient(90deg, rgba(255, 0, 127, 0.05) 0%, transparent 100%);
+    background-size: 100px 100px;
+    opacity: 0.5;
+    z-index: -1;
+    pointer-events: none;
 }
 
-.header-content {
+.cyber-grid::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        linear-gradient(rgba(0, 230, 230, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 230, 230, 0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+}
+
+/* Enhanced Loading Screen */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: var(--background-color);
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    z-index: 9999;
 }
 
-.logo-placeholder {
-    width: 40px;
-    height: 40px;
-    background: var(--primary-color);
-    border-radius: 8px;
-    box-shadow: 0 0 15px var(--primary-glow);
+.cyber-spinner {
+    position: relative;
+    width: 100px;
+    height: 100px;
 }
 
-.glow-text {
+.spinner-inner {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 4px solid transparent;
+    border-top-color: var(--primary-color);
+    border-right-color: var(--secondary-color);
+    border-radius: 50%;
+    animation: rotate 1s linear infinite;
+}
+
+.spinner-inner::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border: 4px solid transparent;
+    border-top-color: var(--neon-blue);
+    border-radius: 50%;
+    animation: rotate 2s linear infinite reverse;
+}
+
+.spinner-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     color: var(--primary-color);
-    text-shadow: 0 0 10px var(--primary-glow);
     font-size: 1.5rem;
+    text-shadow: 0 0 10px var(--primary-glow);
 }
 
-/* Navigation */
-.nav-links {
+/* Enhanced Progress Bar */
+.loading-progress {
+    width: 300px;
+    margin-top: 2rem;
+}
+
+.progress-bar {
+    height: 4px;
+    background: var(--border-color);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--primary-color);
+    position: relative;
+    transition: width 0.3s ease;
+}
+
+.progress-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 5px;
+    background: var(--primary-color);
+    filter: blur(3px);
+    animation: progressGlow 2s ease-in-out infinite;
+}
+
+@keyframes progressGlow {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(2000%); }
+}
+
+/* Cyber Buttons */
+.cyber-button {
+    position: relative;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    background: var(--card-background);
+    color: var(--text-color);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1rem;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.cyber-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        45deg,
+        transparent 0%,
+        rgba(0, 230, 230, 0.1) 50%,
+        transparent 100%
+    );
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+}
+
+.cyber-button:hover::before {
+    transform: translateX(100%);
+}
+
+.cyber-button.primary {
+    background: var(--primary-color);
+    color: var(--background-color);
+}
+
+.cyber-button.secondary {
+    background: var(--secondary-color);
+    color: var(--text-color);
+}
+
+/* NFT Cards */
+.nft-card {
+    position: relative;
+    background: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.nft-card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, 
+        var(--primary-color), 
+        var(--secondary-color), 
+        var(--primary-color)
+    );
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.nft-card:hover::before {
+    opacity: 1;
+}
+
+.nft-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Featured Carousel */
+.featured-carousel {
     display: flex;
     gap: 1rem;
+    padding: 1rem;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
 }
 
-.nav-link {
-    color: var(--text-color);
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+.featured-carousel::-webkit-scrollbar {
+    height: 4px;
 }
 
-.nav-link:hover,
-.nav-link.active {
-    background: rgba(0, 230, 230, 0.1);
-    color: var(--primary-color);
-    transform: translateY(-2px);
+.featured-carousel::-webkit-scrollbar-track {
+    background: var(--border-color);
+}
+
+.featured-carousel::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 2px;
 }
 
 /* Market Stats */
-.market-stats {
+.stats-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
@@ -91,134 +284,416 @@ body {
 }
 
 .stat-card {
-    background: var(--card-bg);
+    position: relative;
+    background: var(--card-background);
     border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 1.5rem;
     text-align: center;
-    transition: all 0.3s ease;
-}
-
-.stat-card:hover {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 20px var(--primary-glow);
-    transform: translateY(-2px);
+    overflow: hidden;
 }
 
 .stat-value {
     font-size: 2rem;
     color: var(--primary-color);
     text-shadow: 0 0 10px var(--primary-glow);
-    display: block;
-    margin-bottom: 0.5rem;
 }
 
-/* NFT Grid */
-.nft-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
-    margin: 2rem 0;
+.card-glow {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(
+        circle,
+        var(--primary-glow) 0%,
+        transparent 70%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
-.nft-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    overflow: hidden;
-    transition: all 0.3s ease;
+.stat-card:hover .card-glow {
+    opacity: 0.1;
 }
 
-.nft-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--primary-color);
-    box-shadow: 0 0 20px var(--primary-glow);
-}
-
-.nft-image-placeholder {
-    height: 280px;
-    background: linear-gradient(45deg, #1a1a1a, #2d2d2d);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* Cyber Glitch Effect */
+.cyber-glitch {
     position: relative;
-}
-
-.placeholder-overlay {
     color: var(--primary-color);
-    font-size: 1.2rem;
     text-shadow: 0 0 10px var(--primary-glow);
 }
 
-.nft-info {
-    padding: 1rem;
+.cyber-glitch::before,
+.cyber-glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    clip: rect(0, 0, 0, 0);
 }
 
-.nft-rarity {
-    color: var(--secondary-color);
-    margin: 0.5rem 0;
+.cyber-glitch::before {
+    left: 2px;
+    text-shadow: -2px 0 var(--secondary-color);
+    animation: glitch-1 2s infinite linear alternate-reverse;
 }
 
-.price-tag {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--border-color);
-}
-
-.btn {
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-family: 'Orbitron', sans-serif;
-}
-
-.btn-primary {
-    background: var(--primary-color);
-    color: var(--background-color);
-}
-
-.btn-buy {
-    background: var(--secondary-color);
-    color: var(--text-color);
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 15px var(--primary-glow);
-}
-
-/* Loading Screen */
-.loading-screen {
-    background: var(--background-color);
-}
-
-.cyber-spinner {
-    width: 60px;
-    height: 60px;
-    border: 3px solid transparent;
-    border-top-color: var(--primary-color);
-    border-right-color: var(--secondary-color);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
+.cyber-glitch::after {
+    left: -2px;
+    text-shadow: 2px 0 var(--primary-color);
+    animation: glitch-2 3s infinite linear alternate-reverse;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .market-stats {
+    .stats-grid {
         grid-template-columns: 1fr;
     }
 
-    .nft-grid {
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    .nav-links {
+        display: none;
+    }
+
+    .mobile-menu-btn {
+        display: block;
+    }
+}
+
+/* Additional Animations */
+@keyframes glitch-1 {
+    0% { clip: rect(20px, 9999px, 21px, 0); }
+    100% { clip: rect(25px, 9999px, 26px, 0); }
+}
+
+@keyframes glitch-2 {
+    0% { clip: rect(25px, 9999px, 26px, 0); }
+    100% { clip: rect(20px, 9999px, 21px, 0); }
+}
+
+/* Search and Filter Styles */
+.filter-bar {
+    background: var(--card-background);
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin: 2rem 0;
+    border: 1px solid var(--border-color);
+}
+
+.search-container {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.cyber-input {
+    width: 100%;
+    padding: 1rem 3rem 1rem 1rem;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-color);
+    font-family: 'Orbitron', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.cyber-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 15px var(--primary-glow);
+    outline: none;
+}
+
+.search-icon {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary-color);
+    pointer-events: none;
+}
+
+.filter-controls {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.cyber-select {
+    padding: 0.75rem 2rem 0.75rem 1rem;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-color);
+    font-family: 'Orbitron', sans-serif;
+    cursor: pointer;
+    appearance: none;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.cyber-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 15px var(--primary-glow);
+    outline: none;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.modal.active {
+    display: flex;
+    opacity: 1;
+}
+
+.modal-content {
+    position: relative;
+    background: var(--card-background);
+    margin: auto;
+    padding: 2rem;
+    border-radius: 12px;
+    max-width: 800px;
+    width: 90%;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+    border: 1px solid var(--border-color);
+}
+
+.modal.active .modal-content {
+    transform: translateY(0);
+}
+
+.close-modal {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.close-modal:hover {
+    color: var(--primary-color);
+    transform: scale(1.1);
+}
+
+/* NFT Preview Styles */
+.nft-preview {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.preview-image {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.preview-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.preview-info {
+    padding: 1rem;
+}
+
+.preview-attributes {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.attribute-item {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+/* Enhanced Button Styles */
+.cyber-button {
+    position: relative;
+    padding: 1rem 2rem;
+    background: transparent;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    z-index: 1;
+}
+
+.cyber-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--primary-color);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
+    z-index: -1;
+}
+
+.cyber-button:hover::before {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+.cyber-button:hover {
+    color: var(--background-color);
+}
+
+/* Rarity Badges */
+.rarity-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.rarity-legendary {
+    background: linear-gradient(45deg, #ffd700, #ff8c00);
+    color: var(--background-color);
+}
+
+.rarity-epic {
+    background: linear-gradient(45deg, #9400d3, #4b0082);
+    color: var(--text-color);
+}
+
+.rarity-rare {
+    background: linear-gradient(45deg, #0000ff, #000080);
+    color: var(--text-color);
+}
+
+/* Price Tag Styles */
+.price-tag {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding: 0.5rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.price-amount {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+/* Loading Animations */
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+    .nft-preview {
+        grid-template-columns: 1fr;
+    }
+    
+    .filter-controls {
+        flex-direction: column;
+    }
+    
+    .cyber-select {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .modal-content {
+        padding: 1rem;
+    }
+    
+    .preview-attributes {
+        grid-template-columns: 1fr;
+    }
+    
+    .cyber-button {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--background-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--hover-color);
+}
+
+/* Toast Notifications */
+.toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    background: var(--card-background);
+    border: 1px solid var(--primary-color);
+    color: var(--text-color);
+    z-index: 1000;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
     }
 }
