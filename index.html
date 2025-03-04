@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Y2KCoin - Faction Selection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <div class="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="container mx-auto px-4 py-8 md:py-12">
+        <div class="text-center mb-8 md:mb-12">
+            <h1 class="text-3xl md:text-5xl font-bold mb-4 glow-text">Choose Your Faction</h1>
+            <p class="text-base md:text-lg text-gray-400">Select your alliance in the AI Blockchain War</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-w-4xl mx-auto mb-8 md:mb-12">
+            <div class="faction-card cro p-4 md:p-6" ontouchstart="" onclick="selectFaction(1)">
+                <h3 class="text-xl md:text-2xl font-bold text-[#008cff] mb-2 md:mb-3">CRO</h3>
+                <p class="text-sm md:text-base text-gray-400">Masters of digital commerce and technological innovation</p>
+            </div>
+            
+            <div class="faction-card sol p-4 md:p-6" ontouchstart="" onclick="selectFaction(2)">
+                <h3 class="text-xl md:text-2xl font-bold text-[#9933ff] mb-2 md:mb-3">SOL</h3>
+                <p class="text-sm md:text-base text-gray-400">Swift and decisive, warriors of the digital realm</p>
+            </div>
+            
+            <div class="faction-card eth p-4 md:p-6" ontouchstart="" onclick="selectFaction(3)">
+                <h3 class="text-xl md:text-2xl font-bold text-gray-300 mb-2 md:mb-3">ETH</h3>
+                <p class="text-sm md:text-base text-gray-400">Ancient pioneers of the blockchain universe</p>
+            </div>
+            
+            <div class="faction-card bnb p-4 md:p-6" ontouchstart="" onclick="selectFaction(4)">
+                <h3 class="text-xl md:text-2xl font-bold text-[#f3ba2f] mb-2 md:mb-3">BNB</h3>
+                <p class="text-sm md:text-base text-gray-400">Economic powerhouse with unmatched resources</p>
+            </div>
+        </div>
+
+        <div class="text-center mb-6 md:mb-8">
+            <button class="connect-btn mx-auto" onclick="connectWallet()">Connect Wallet</button>
+        </div>
+
+        <div class="status-container max-w-2xl mx-auto text-center">
+            <p id="status" class="text-sm md:text-base text-gray-400 mb-2">Wallet not connected</p>
+            <p id="faction" class="text-sm md:text-base text-cyan-400 font-bold">Faction: Not chosen</p>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
